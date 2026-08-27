@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>BitCrackGUI</AssemblyName>
+    <RootNamespace>BitCrackGUI</RootNamespace>
+  </PropertyGroup>
+
+  <Target Name="CopyNativeBitCrackBackend" AfterTargets="Build;Publish">
+    <PropertyGroup>
+      <ReleaseNativeSource>$(MSBuildProjectDirectory)\..\x64\Release\cuBitCrack.exe</ReleaseNativeSource>
+      <ConfigNativeSource>$(MSBuildProjectDirectory)\..\x64\$(Configuration)\cuBitCrack.exe</ConfigNativeSource>
+      <RCKangarooSource>$(MSBuildProjectDirectory)\..\RCKangaroo_v31\RCKangaroo.exe</RCKangarooSource>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <NativeBackendFiles Include="$(ReleaseNativeSource)" Condition="Exists('$(ReleaseNativeSource)')" />
+      <NativeBackendFiles Include="$(ConfigNativeSource)" Condition="Exists('$(ConfigNativeSource)') and '$(Configuration)' != 'Release'" />
+      <NativeBackendFiles Include="$(RCKangarooSource)" Condition="Exists('$(RCKangarooSource)')" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(NativeBackendFiles)" DestinationFolder="$(TargetDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+
+</Project>
